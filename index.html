@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>インフルエンサー施術申請フォーム</title>
+<style>
+  :root{
+    --bg:        #eef0f1;
+    --surface:   #ffffff;
+    --ink:       #16191c;
+    --ink-sub:   #5c6469;
+    --line:      #dde1e3;
+    --line-soft: #eceef0;
+    --accent:    #2e5a4e;
+    --accent-bg: #edf3f0;
+    --danger:    #b3261e;
+    --danger-bg: #fdecea;
+    --ok:        #1f5c45;
+    --ok-bg:     #e8f2ed;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    padding:0 0 48px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+                 "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    font-size:15px;
+    line-height:1.7;
+    -webkit-text-size-adjust:100%;
+  }
+
+  .wrap{ max-width:560px; margin:0 auto; padding:0 12px; }
+
+  /* ---- ヘッダー ---- */
+  header{
+    padding:28px 0 18px;
+  }
+  header h1{
+    font-size:1.25rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    margin:0 0 4px;
+    line-height:1.45;
+  }
+  header p{
+    margin:0;
+    font-size:.82rem;
+    color: var(--ink-sub);
+  }
+
+  /* ---- 入力ブロック ---- */
+  .block{
+    background: var(--surface);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px;
+    margin-bottom:10px;
+  }
+
+  .q{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    margin-bottom:2px;
+  }
+  .q .title{
+    font-size:.95rem;
+    font-weight:700;
+    line-height:1.5;
+  }
+  .tag{
+    flex:none;
+    font-size:.68rem;
+    font-weight:700;
+    line-height:1;
+    padding:4px 6px;
+    border-radius:2px;
+    letter-spacing:.04em;
+  }
+  .tag.req{ color:var(--danger); background:var(--danger-bg); }
+  .tag.opt{ color:var(--ink-sub); background:var(--line-soft); }
+
+  .hint{
+    font-size:.78rem;
+    color: var(--ink-sub);
+    margin:0 0 10px;
+    line-height:1.6;
+  }
+
+  input[type="text"], input[type="date"]{
+    width:100%;
+    padding:11px 12px;
+    font-size:16px;              /* スマホでのズーム防止 */
+    font-family:inherit;
+    color:var(--ink);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:3px;
+    transition:border-color .12s, box-shadow .12s;
+  }
+  input[type="text"]:focus, input[type="date"]:focus{
+    outline:none;
+    border-color: var(--accent);
+    box-shadow:0 0 0 3px var(--accent-bg);
+  }
+  input::placeholder{ color:#9aa2a7; }
+
+  /* ---- チェックボックス ---- */
+  .choices{ display:flex; flex-direction:column; gap:2px; }
+  .choice{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:9px 10px;
+    margin:0 -10px;
+    border-radius:3px;
+    cursor:pointer;
+    font-size:.92rem;
+    line-height:1.55;
+  }
+  .choice:hover{ background: var(--line-soft); }
+  .choice input{
+    flex:none;
+    width:19px; height:19px;
+    margin:1px 0 0;
+    accent-color: var(--accent);
+  }
+
+  .cond-img{
+    display:block;
+    width:100%;
+    margin-bottom:12px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background: var(--line-soft);
+  }
+
+  .cond-status{
+    margin-top:10px;
+    padding:9px 12px;
+    border-radius:3px;
+    font-size:.82rem;
+    font-weight:700;
+    line-height:1.5;
+  }
+  .cond-status.ng{ color:var(--danger); background:var(--danger-bg); }
+  .cond-status.ok{ color:var(--ok);     background:var(--ok-bg); }
+
+  .other-input{ display:none; margin-top:8px; }
+
+  /* ---- 本数入力 ---- */
+  .count-list{
+    border-top:1px solid var(--line-soft);
+    margin-top:12px;
+  }
+  .count-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:9px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .count-row .name{
+    font-size:.9rem;
+    line-height:1.4;
+  }
+  .count-field{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .count-field input{
+    width:76px;
+    padding:8px 10px;
+    text-align:right;
+    font-variant-numeric: tabular-nums;
+    font-size:16px;
+  }
+  .count-field .unit{
+    font-size:.82rem;
+    color:var(--ink-sub);
+  }
+  .count-row.has-value .count-field input{
+    border-color: var(--accent);
+    font-weight:700;
+  }
+
+  .count-row.other{ flex-wrap:wrap; }
+  .count-row.other .name{ flex:none; }
+  .count-row.other .other-name{
+    flex:1 1 120px;
+    min-width:0;
+    padding:8px 10px;
+    font-size:14px;
+  }
+
+  .total{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-top:14px;
+    padding:10px 12px;
+    background: var(--accent-bg);
+    border-radius:3px;
+  }
+  .total .label{ font-size:.8rem; color:var(--ink-sub); }
+  .total .value{
+    font-size:1.15rem;
+    font-weight:700;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+  .total .value span{ font-size:.8rem; font-weight:400; margin-left:2px; }
+
+  .hidden-block{ display:none !important; }
+
+  /* ---- 送信 ---- */
+  #sendBtn{
+    width:100%;
+    margin-top:18px;
+    padding:15px;
+    font-size:1rem;
+    font-weight:700;
+    font-family:inherit;
+    letter-spacing:.04em;
+    color:#fff;
+    background: var(--ink);
+    border:none;
+    border-radius:3px;
+    cursor:pointer;
+    transition:opacity .12s;
+  }
+  #sendBtn:hover{ opacity:.88; }
+  #sendBtn:disabled{ opacity:.45; cursor:default; }
+
+  #status{
+    margin-top:10px;
+    font-size:.85rem;
+    line-height:1.6;
+    border-radius:3px;
+  }
+  #status:not(:empty){ padding:11px 13px; }
+  #status.info   { color:var(--ink-sub); background:var(--line-soft); }
+  #status.success{ color:var(--ok);      background:var(--ok-bg); }
+  #status.error  { color:var(--danger);  background:var(--danger-bg); }
+
+  footer{
+    margin-top:24px;
+    font-size:.75rem;
+    color:var(--ink-sub);
+    text-align:center;
+    line-height:1.7;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+</style>
+<script>
+/* ===================================================================
+   送信先（GASウェブアプリのURL）
+   「新しいデプロイ」で発行されたURLを貼り付ける。
+   /a/macros/create1.com/ が含まれていたら、その部分を削って
+   https://script.google.com/macros/s/XXXXX/exec の形にすること。
+   =================================================================== */
+const ENDPOINT = 'https://script.google.com/macros/s/XXXXX/exec';
+
+
+/* 本数入力の項目定義。増減するときはHTML側の行も合わせること。 */
+const COUNT_ITEMS = {
+  pe: {
+    prefix: '【プルエクステ】',
+    block: 'blockPullExte',
+    items: [
+      { id:'pe_diamond',        label:'ダイヤモンド' },
+      { id:'pe_diamondSpecial', label:'ダイヤモンド特色' },
+      { id:'pe_platinum',       label:'プラチナ50' },
+      { id:'pe_platinumPrem',   label:'プラチナ40' },
+      { id:'pe_crystal',        label:'クリスタル' },
+      { id:'pe_superLong1A7',   label:'スーパーロング1A/7#' },
+      { id:'pe_superLong40W',   label:'スーパーロング40W' }
+    ],
+    otherNum:'pe_otherNum', otherText:'pe_otherText', total:'pe_total'
+  },
+  ps: {
+    prefix: '【プルシール】',
+    block: 'blockPullSeal',
+    items: [
+      { id:'ps_diamond',        label:'ダイヤモンド' },
+      { id:'ps_diamondSpecial', label:'ダイヤモンド特色' },
+      { id:'ps_premium',        label:'プレミアム' }
+    ],
+    otherNum:'ps_otherNum', otherText:'ps_otherText', total:'ps_total'
+  }
+};
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  /* ---- 施術内容「その他」の表示制御 ---- */
+  var otherCb = document.querySelector('input[name="treatment"][value="その他"]');
+  var otherIn = document.getElementById('treatmentOther');
+  if (otherCb && otherIn) {
+    otherCb.addEventListener('change', function () {
+      otherIn.style.display = this.checked ? 'block' : 'none';
+    });
+  }
+
+  /* ---- 条件確認のメッセージ ---- */
+  var conds = Array.from(document.querySelectorAll('input[name="conditions"]'));
+  var condMsg = document.getElementById('conditionsMessage');
+  function updateConditionMessage() {
+    var all = conds.every(c => c.checked);
+    condMsg.textContent = all
+      ? '3つの条件を満たしています。申請できます。'
+      : 'すべての項目をクリアしている場合のみ申請できます';
+    condMsg.className = 'cond-status ' + (all ? 'ok' : 'ng');
+  }
+  conds.forEach(cb => cb.addEventListener('change', updateConditionMessage));
+  updateConditionMessage();
+
+  /* ---- 施術内容にあわせて本数ブロックを出し分け ---- */
+  function toggleCountBlocks() {
+    var checked = Array.from(document.querySelectorAll('input[name="treatment"]:checked'))
+                       .map(c => c.value);
+    setBlock('blockPullExte', checked.includes('プルエクステ'));
+    setBlock('blockPullSeal', checked.includes('プルシールエクステ'));
+    updateTotals();
+  }
+
+  function setBlock(id, show) {
+    var block = document.getElementById(id);
+    if (!block) return;
+    if (show) {
+      block.classList.remove('hidden-block');
+      return;
+    }
+    block.classList.add('hidden-block');
+    block.querySelectorAll('.count-field input').forEach(i => i.value = '0');
+    block.querySelectorAll('.other-name').forEach(i => i.value = '');
+    block.querySelectorAll('.count-row').forEach(r => r.classList.remove('has-value'));
+  }
+
+  document.querySelectorAll('input[name="treatment"]')
+          .forEach(cb => cb.addEventListener('change', toggleCountBlocks));
+  toggleCountBlocks();
+
+  /* ---- 本数入力：全角の自動変換・0の扱い・合計表示 ---- */
+  document.querySelectorAll('.count-field input').forEach(function (input) {
+
+    // タップしたら全選択。初期値の 0 を消す手間をなくす
+    input.addEventListener('focus', function () { this.select(); });
+
+    input.addEventListener('input', function () {
+      // 全角数字は自動で半角に直す。数字以外は捨てる
+      var v = this.value
+        .replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+        .replace(/[^0-9]/g, '');
+      if (v !== this.value) this.value = v;
+      markRow(this);
+      updateTotals();
+    });
+
+    input.addEventListener('blur', function () {
+      // 空欄のままにせず 0 に戻す
+      this.value = this.value === '' ? '0' : String(parseInt(this.value, 10));
+      markRow(this);
+      updateTotals();
+    });
+  });
+
+  function markRow(input) {
+    var row = input.closest('.count-row');
+    if (row) row.classList.toggle('has-value', parseInt(input.value, 10) > 0);
+  }
+
+  window.updateTotals = updateTotals;
+  function updateTotals() {
+    Object.keys(COUNT_ITEMS).forEach(function (key) {
+      var def = COUNT_ITEMS[key];
+      var sum = 0;
+      def.items.forEach(function (item) {
+        sum += toInt(document.getElementById(item.id).value);
+      });
+      sum += toInt(document.getElementById(def.otherNum).value);
+      document.getElementById(def.total).textContent = sum;
+    });
+  }
+});
+
+
+function toInt(v) {
+  var n = parseInt(v, 10);
+  return isNaN(n) ? 0 : n;
+}
+
+function showMessage(msg, type) {
+  var status = document.getElementById('status');
+  status.textContent = msg;
+  status.className = msg ? type : '';
+}
+
+function getCheckedValues(name) {
+  return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+              .map(cb => cb.value).join(', ');
+}
+
+/* ---- 本数を「【プルエクステ】ダイヤモンド【30本】」形式にまとめる ---- */
+function getHairAmountValues() {
+  var results = [];
+
+  Object.keys(COUNT_ITEMS).forEach(function (key) {
+    var def = COUNT_ITEMS[key];
+    var block = document.getElementById(def.block);
+    if (!block || block.classList.contains('hidden-block')) return;
+
+    def.items.forEach(function (item) {
+      var n = toInt(document.getElementById(item.id).value);
+      if (n > 0) results.push(def.prefix + item.label + '【' + n + '本】');
+    });
+
+    var otherNum  = toInt(document.getElementById(def.otherNum).value);
+    var otherName = document.getElementById(def.otherText).value.trim();
+    if (otherNum > 0) {
+      var label = otherName ? 'その他(' + otherName + ')' : 'その他';
+      results.push(def.prefix + label + '【' + otherNum + '本】');
+    }
+  });
+
+  return results.join('、 ');
+}
+
+/* ---- 送信後の初期化 ---- */
+function resetFormState() {
+  document.querySelector('form').reset();
+
+  document.querySelectorAll('.count-field input').forEach(i => i.value = '0');
+  document.querySelectorAll('.count-row').forEach(r => r.classList.remove('has-value'));
+  document.getElementById('treatmentOther').style.display = 'none';
+
+  var ev = new Event('change');
+  document.querySelectorAll('input[name="treatment"]').forEach(cb => cb.dispatchEvent(ev));
+  document.querySelectorAll('input[name="conditions"]').forEach(cb => cb.dispatchEvent(ev));
+
+  window.updateTotals();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+
+function submitForm() {
+  var salonName      = document.getElementById('salonName').value.trim();
+  var yourName       = document.getElementById('yourName').value.trim();
+  var accountID      = document.getElementById('accountID').value.trim();
+  var postURL        = document.getElementById('postURL').value.trim();
+  var counsellingURL = document.getElementById('counsellingURL').value.trim();
+
+  // 投稿日は yyyy-mm-dd で取れるので yyyy/mm/dd に整形する
+  var postDateRaw = document.getElementById('postDate').value;
+  var postDate    = postDateRaw ? postDateRaw.replace(/-/g, '/') : '';
+
+  var allConds     = document.querySelectorAll('input[name="conditions"]');
+  var checkedConds = document.querySelectorAll('input[name="conditions"]:checked');
+  if (checkedConds.length !== allConds.length) {
+    showMessage('条件確認は、すべての項目にチェックが必要です', 'error');
+    return;
+  }
+  var conditions = getCheckedValues('conditions');
+
+  var treatment = getCheckedValues('treatment');
+  if (treatment.includes('その他')) {
+    var other = document.getElementById('treatmentOther').value.trim();
+    if (!other) { showMessage('施術内容の「その他」を入力してください', 'error'); return; }
+    treatment = treatment.replace('その他', other);
+  }
+
+  var hairAmount = getHairAmountValues();
+
+  var required = [
+    { value: salonName,  name: '担当サロン名' },
+    { value: yourName,   name: '担当者名' },
+    { value: accountID,  name: 'インフルエンサーのアカウントID' },
+    { value: postURL,    name: 'インフルエンサー投稿URL' },
+    { value: postDate,   name: 'インフルエンサー投稿日' },
+    { value: conditions, name: '条件確認' },
+    { value: treatment,  name: '施術内容' }
+  ];
+
+  var empty = required.find(f => !f.value);
+  if (empty) {
+    showMessage(empty.name + ' を入力してください', 'error');
+    return;
+  }
+  if (!hairAmount) {
+    showMessage('エクステの本数を少なくとも1つ入力してください', 'error');
+    return;
+  }
+
+  var btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = '送信中…';
+  showMessage('送信しています…', 'info');
+
+  function resetBtn() {
+    btn.disabled = false;
+    btn.textContent = '送信する';
+  }
+
+  /* Content-Type は必ず text/plain のままにすること。
+     application/json にするとブラウザがプリフライト(OPTIONS)を送り、
+     GAS が応答できないため送信に失敗する。中身はJSON文字列でよい。 */
+  fetch(ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      url: postURL,
+      values: [
+        salonName, yourName, accountID, postURL, postDate,
+        counsellingURL, conditions, treatment, hairAmount
+      ]
+    })
+  })
+  .then(res => res.json())
+  .then(function (data) {
+    if (data.result === 'duplicate') {
+      showMessage('この投稿はすでに申請されています', 'error');
+      resetBtn();
+      return;
+    }
+    if (data.result !== 'ok') {
+      showMessage('送信できませんでした。クリエイトワンにご連絡ください', 'error');
+      resetBtn();
+      return;
+    }
+
+    showMessage('送信が完了しました。申請内容にミスがあった場合はクリエイトワンにご連絡ください', 'success');
+    resetFormState();
+
+    setTimeout(function () {
+      showMessage('', '');
+      resetBtn();
+    }, 4000);
+  })
+  .catch(function () {
+    showMessage('通信に失敗しました。時間をおいて再度お試しください', 'error');
+    resetBtn();
+  });
+}
+</script>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>インフルエンサー施術申請フォーム</h1>
+    <p>施術日から2週間以内にご申請ください</p>
+  </header>
+
+  <form onsubmit="submitForm(); return false;">
+
+    <div class="block">
+      <div class="q"><span class="title">担当サロン名</span><span class="tag req">必須</span></div>
+      <input type="text" id="salonName" autocomplete="organization">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">担当者名</span><span class="tag req">必須</span></div>
+      <input type="text" id="yourName" autocomplete="name">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">インフルエンサーのアカウントID</span><span class="tag req">必須</span></div>
+      <input type="text" id="accountID">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">インフルエンサー投稿URL</span><span class="tag req">必須</span></div>
+      <input type="text" id="postURL" inputmode="url" placeholder="https://">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">インフルエンサー投稿日</span><span class="tag req">必須</span></div>
+      <p class="hint">カレンダーから日付を選択してください</p>
+      <input type="date" id="postDate">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">カウンセリング動画投稿URL</span><span class="tag opt">任意</span></div>
+      <p class="hint">カウンセリング動画を撮影している場合のみ記入してください</p>
+      <input type="text" id="counsellingURL" inputmode="url" placeholder="https://">
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">条件確認</span><span class="tag req">必須</span></div>
+      <p class="hint">下記の条件をすべて満たしている場合のみ申請できます</p>
+      <img class="cond-img"
+           src="https://static.wixstatic.com/media/79965c_351a497162c14567b96a24ef39a449e3~mv2.jpg"
+           alt="申請条件の一覧">
+      <div class="choices">
+        <label class="choice">
+          <input type="checkbox" name="conditions" value="施術日から2週間以内である">
+          <span>施術日から2週間以内である</span>
+        </label>
+        <label class="choice">
+          <input type="checkbox" name="conditions" value="フォロワー数が条件に達している">
+          <span>インフルエンサーのフォロワー数が条件に達している</span>
+        </label>
+        <label class="choice">
+          <input type="checkbox" name="conditions" value="公式アカウントのタグ付けがされている">
+          <span>投稿に公式アカウントのタグ付けがある</span>
+        </label>
+      </div>
+      <div id="conditionsMessage" class="cond-status ng"></div>
+    </div>
+
+    <div class="block">
+      <div class="q"><span class="title">施術内容</span><span class="tag req">必須</span></div>
+      <p class="hint">選択すると、下に本数の入力欄が表示されます</p>
+      <div class="choices">
+        <label class="choice">
+          <input type="checkbox" name="treatment" value="プルエクステ"><span>プルエクステ</span>
+        </label>
+        <label class="choice">
+          <input type="checkbox" name="treatment" value="プルシールエクステ"><span>プルシールエクステ</span>
+        </label>
+        <label class="choice">
+          <input type="checkbox" name="treatment" value="その他"><span>その他</span>
+        </label>
+      </div>
+      <input type="text" id="treatmentOther" class="other-input" placeholder="その他の施術内容を入力してください">
+    </div>
+
+
+    <div id="blockPullExte" class="block hidden-block">
+      <div class="q"><span class="title">エクステ本数（プルエクステ）</span><span class="tag req">必須</span></div>
+      <p class="hint">使用した種類の本数を入力してください。使っていない種類は 0 のままで構いません</p>
+
+      <div class="count-list">
+        <div class="count-row">
+          <span class="name">ダイヤモンド</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_diamond" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">ダイヤモンド特色</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_diamondSpecial" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">プラチナ50</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_platinum" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">プラチナ40</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_platinumPrem" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">クリスタル</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_crystal" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">スーパーロング1A/7#</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_superLong1A7" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">スーパーロング40W</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_superLong40W" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row other">
+          <span class="name">その他</span>
+          <input type="text" id="pe_otherText" class="other-name" placeholder="種類名">
+          <span class="count-field"><input type="text" inputmode="numeric" id="pe_otherNum" value="0"><span class="unit">本</span></span>
+        </div>
+      </div>
+
+      <div class="total">
+        <span class="label">プルエクステ 合計</span>
+        <span class="value"><span id="pe_total">0</span><span>本</span></span>
+      </div>
+    </div>
+
+
+    <div id="blockPullSeal" class="block hidden-block">
+      <div class="q"><span class="title">エクステ本数（プルシール）</span><span class="tag req">必須</span></div>
+      <p class="hint">使用した種類の本数を入力してください。使っていない種類は 0 のままで構いません</p>
+
+      <div class="count-list">
+        <div class="count-row">
+          <span class="name">ダイヤモンド</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="ps_diamond" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">ダイヤモンド特色</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="ps_diamondSpecial" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row">
+          <span class="name">プレミアム</span>
+          <span class="count-field"><input type="text" inputmode="numeric" id="ps_premium" value="0"><span class="unit">本</span></span>
+        </div>
+        <div class="count-row other">
+          <span class="name">その他</span>
+          <input type="text" id="ps_otherText" class="other-name" placeholder="種類名">
+          <span class="count-field"><input type="text" inputmode="numeric" id="ps_otherNum" value="0"><span class="unit">本</span></span>
+        </div>
+      </div>
+
+      <div class="total">
+        <span class="label">プルシール 合計</span>
+        <span class="value"><span id="ps_total">0</span><span>本</span></span>
+      </div>
+    </div>
+
+    <button id="sendBtn" type="submit">送信する</button>
+    <div id="status"></div>
+  </form>
+
+  <footer>クリエイトワン株式会社</footer>
+</div>
+</body>
+</html>
