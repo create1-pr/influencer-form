@@ -270,7 +270,7 @@
    /a/macros/create1.com/ が含まれていたら、その部分を削って
    https://script.google.com/macros/s/XXXXX/exec の形にすること。
    =================================================================== */
-const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwShKbLGUCDzjlp3l0LmGQ6vuGakI_vMXYW3xCSVzMbFecEaKCh8zLrzwv15cqCzbzj/exec';
+const ENDPOINT = 'https://script.google.com/macros/s/XXXXX/exec';
 
 
 /* 本数入力の項目定義。増減するときはHTML側の行も合わせること。 */
@@ -599,7 +599,9 @@ function submitForm() {
     <div class="block">
       <div class="q"><span class="title">条件確認</span><span class="tag req">必須</span></div>
       <p class="hint">下記の条件をすべて満たしている場合のみ申請できます</p>
-      <img class="cond-img" src="kijun.png" alt="プルエクステ・プルシールの材料費申請基準表">
+      <img class="cond-img"
+           src="https://static.wixstatic.com/media/79965c_351a497162c14567b96a24ef39a449e3~mv2.jpg"
+           alt="申請条件の一覧">
       <div class="choices">
         <label class="choice">
           <input type="checkbox" name="conditions" value="施術日から2週間以内である">
